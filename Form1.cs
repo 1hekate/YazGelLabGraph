@@ -45,5 +45,34 @@ namespace YazGelLab
             hedefDugum = null;
             pnlGraph.Invalidate();
         }
+
+        private void pnlGraph_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            foreach (var edge in graphManager.Edges)
+            {
+                g.DrawLine(Pens.Gray,
+                    edge.BaslangicDugumu.Konum,
+                    edge.BitisDugumu.Konum);
+            }
+
+            foreach (var node in graphManager.Nodes)
+            {
+                Brush b = Brushes.LightBlue;
+                if (node == seciliDugum) b = Brushes.Lime;
+                if (node == hedefDugum) b = Brushes.Red;
+
+                Rectangle r = new Rectangle(
+                    node.Konum.X - 20,
+                    node.Konum.Y - 20,
+                    40, 40);
+
+                g.FillEllipse(b, r);
+                g.DrawEllipse(Pens.Black, r);
+                g.DrawString(node.Ad, Font, Brushes.Black, node.Konum.X - 10, node.Konum.Y - 30);
+            }
+        }
     }
 }
