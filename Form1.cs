@@ -15,6 +15,12 @@ namespace YazGelLab
         // Seçim Değişkenleri
         UserNode seciliDugum = null; // Sol Tık
         UserNode hedefDugum = null;  // Sağ Tık
+
+        public Form1()
+        {
+            InitializeComponent();
+            graphManager = new GraphManager();
+        }
     }
 }
     
