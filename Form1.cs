@@ -19,6 +19,22 @@ namespace YazGelLab
             graphManager = new GraphManager();
         }
 
+        private void btnAddNodeManuel_Click(object sender, EventArgs e)
+        {
+            UserNode n = new UserNode(
+                txtAd.Text,
+                double.Parse(txtAktiflik.Text),
+                double.Parse(txtEtkilesim.Text),
+                1);
+
+            n.Konum = new Point(
+                rnd.Next(50, pnlGraph.Width - 50),
+                rnd.Next(50, pnlGraph.Height - 50));
+
+            graphManager.AddNode(n);
+            pnlGraph.Invalidate();
+        }
+
         private void pnlGraph_MouseClick(object sender, MouseEventArgs e)
         {
             Point tiklananYer = e.Location;
@@ -49,14 +65,9 @@ namespace YazGelLab
         private void pnlGraph_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
             foreach (var edge in graphManager.Edges)
-            {
-                g.DrawLine(Pens.Gray,
-                    edge.BaslangicDugumu.Konum,
-                    edge.BitisDugumu.Konum);
-            }
+                g.DrawLine(Pens.Gray, edge.BaslangicDugumu.Konum, edge.BitisDugumu.Konum);
 
             foreach (var node in graphManager.Nodes)
             {
@@ -64,11 +75,7 @@ namespace YazGelLab
                 if (node == seciliDugum) b = Brushes.Lime;
                 if (node == hedefDugum) b = Brushes.Red;
 
-                Rectangle r = new Rectangle(
-                    node.Konum.X - 20,
-                    node.Konum.Y - 20,
-                    40, 40);
-
+                Rectangle r = new Rectangle(node.Konum.X - 20, node.Konum.Y - 20, 40, 40);
                 g.FillEllipse(b, r);
                 g.DrawEllipse(Pens.Black, r);
                 g.DrawString(node.Ad, Font, Brushes.Black, node.Konum.X - 10, node.Konum.Y - 30);
