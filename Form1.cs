@@ -20,6 +20,9 @@ namespace YazGelLab
             graphManager = new GraphManager();
         }
 
+        // -------------------------------
+        // FORM LOAD
+        // -------------------------------
         private void Form1_Load(object sender, EventArgs e)
         {
             gridSonuclar.Columns.Clear();
@@ -44,6 +47,76 @@ namespace YazGelLab
                 rnd.Next(50, pnlGraph.Height - 50));
 
             graphManager.AddNode(n);
+            pnlGraph.Invalidate();
+        }
+
+        // -------------------------------
+        // NODE SİL
+        // -------------------------------
+        private void btnDeleteNode_Click(object sender, EventArgs e)
+        {
+            if (seciliDugum == null)
+            {
+                MessageBox.Show("Silinecek düğümü seçin.");
+                return;
+            }
+
+            for (int i = graphManager.Edges.Count - 1; i >= 0; i--)
+            {
+                if (graphManager.Edges[i].BaslangicDugumu == seciliDugum ||
+                    graphManager.Edges[i].BitisDugumu == seciliDugum)
+                {
+                    graphManager.Edges.RemoveAt(i);
+                }
+            }
+
+            graphManager.Nodes.Remove(seciliDugum);
+            seciliDugum = null;
+            hedefDugum = null;
+
+            pnlGraph.Invalidate();
+        }
+
+        // -------------------------------
+        // 🔴 RANDOM GRAPH (YENİ)
+        // -------------------------------
+        private void btnRandomGraph_Click(object sender, EventArgs e)
+        {
+            graphManager = new GraphManager();
+            seciliDugum = null;
+            hedefDugum = null;
+
+            int nodeSayisi = rnd.Next(5, 10);
+
+            // Node oluştur
+            for (int i = 0; i < nodeSayisi; i++)
+            {
+                UserNode n = new UserNode(
+                    "U" + (i + 1),
+                    rnd.Next(1, 10),
+                    rnd.Next(10, 100),
+                    1);
+
+                n.Konum = new Point(
+                    rnd.Next(50, pnlGraph.Width - 50),
+                    rnd.Next(50, pnlGraph.Height - 50));
+
+                graphManager.AddNode(n);
+            }
+
+            // Edge oluştur
+            foreach (var node in graphManager.Nodes)
+            {
+                int baglantiSayisi = rnd.Next(1, 3);
+
+                for (int i = 0; i < baglantiSayisi; i++)
+                {
+                    var hedef = graphManager.Nodes[rnd.Next(graphManager.Nodes.Count)];
+                    if (hedef != node)
+                        graphManager.AddEdge(node.Ad, hedef.Ad);
+                }
+            }
+
             pnlGraph.Invalidate();
         }
 
@@ -101,42 +174,10 @@ namespace YazGelLab
             var yol = Algorithms.Dijkstra(graphManager, seciliDugum, hedefDugum);
 
             gridSonuclar.Rows.Clear();
-
-            if (yol == null)
-            {
-                MessageBox.Show("Yol bulunamadı.");
-                return;
-            }
+            if (yol == null) return;
 
             for (int i = 0; i < yol.Count; i++)
                 gridSonuclar.Rows.Add(i + 1, yol[i].Ad);
-        }
-
-        // -------------------------------
-        // A* (YENİ)
-        // -------------------------------
-        private void btnAStar_Click(object sender, EventArgs e)
-        {
-            if (seciliDugum == null || hedefDugum == null)
-            {
-                MessageBox.Show("Başlangıç ve hedef seçin.");
-                return;
-            }
-
-            var yol = Algorithms.AStar(graphManager, seciliDugum, hedefDugum);
-
-            gridSonuclar.Rows.Clear();
-
-            if (yol == null)
-            {
-                MessageBox.Show("A* yol bulamadı.");
-                return;
-            }
-
-            for (int i = 0; i < yol.Count; i++)
-                gridSonuclar.Rows.Add(i + 1, yol[i].Ad);
-
-            MessageBox.Show("A* ile en kısa yol bulundu.");
         }
 
         // -------------------------------
@@ -178,7 +219,7 @@ namespace YazGelLab
         }
 
         // -------------------------------
-        // NODE SEÇİM
+        // MOUSE
         // -------------------------------
         private void pnlGraph_MouseClick(object sender, MouseEventArgs e)
         {
