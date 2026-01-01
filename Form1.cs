@@ -21,18 +21,18 @@ namespace YazGelLab
         }
 
         // -------------------------------
-        // FORM LOAD → TABLO HAZIRLA
+        // FORM LOAD
         // -------------------------------
         private void Form1_Load(object sender, EventArgs e)
         {
             gridSonuclar.Columns.Clear();
             gridSonuclar.Columns.Add("Sira", "Sıra");
-            gridSonuclar.Columns.Add("Bilgi", "Ziyaret Edilen Düğüm");
+            gridSonuclar.Columns.Add("Bilgi", "Sonuç");
             gridSonuclar.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         // -------------------------------
-        // MANUEL DÜĞÜM EKLE
+        // MANUEL NODE EKLE
         // -------------------------------
         private void btnAddNodeManuel_Click(object sender, EventArgs e)
         {
@@ -51,13 +51,13 @@ namespace YazGelLab
         }
 
         // -------------------------------
-        // BFS ÇALIŞTIR
+        // BFS
         // -------------------------------
         private void btnBFS_Click(object sender, EventArgs e)
         {
             if (seciliDugum == null)
             {
-                MessageBox.Show("Başlangıç düğümünü sol tık ile seçin.");
+                MessageBox.Show("Başlangıç düğümü seçin.");
                 return;
             }
 
@@ -67,23 +67,38 @@ namespace YazGelLab
             gridSonuclar.Rows.Add("0", seciliDugum.Ad);
 
             for (int i = 0; i < sonuc.Count; i++)
-            {
-                gridSonuclar.Rows.Add((i + 1).ToString(), sonuc[i]);
-            }
-
-            MessageBox.Show("BFS tamamlandı.");
+                gridSonuclar.Rows.Add(i + 1, sonuc[i]);
         }
 
         // -------------------------------
-        // KENAR EKLE
+        // DFS (YENİ)
+        // -------------------------------
+        private void btnDFS_Click(object sender, EventArgs e)
+        {
+            if (seciliDugum == null)
+            {
+                MessageBox.Show("Başlangıç düğümü seçin.");
+                return;
+            }
+
+            var sonuc = Algorithms.DFS(graphManager, seciliDugum);
+
+            gridSonuclar.Rows.Clear();
+            gridSonuclar.Rows.Add("0", seciliDugum.Ad);
+
+            for (int i = 0; i < sonuc.Count; i++)
+                gridSonuclar.Rows.Add(i + 1, sonuc[i]);
+
+            MessageBox.Show("DFS tamamlandı.");
+        }
+
+        // -------------------------------
+        // EDGE EKLE
         // -------------------------------
         private void btnAddEdge_Click(object sender, EventArgs e)
         {
             if (seciliDugum == null || hedefDugum == null)
-            {
-                MessageBox.Show("İki düğüm seçmelisiniz.");
                 return;
-            }
 
             bool varMi = graphManager.Edges.Any(ed =>
                 (ed.BaslangicDugumu == seciliDugum && ed.BitisDugumu == hedefDugum) ||
@@ -97,11 +112,12 @@ namespace YazGelLab
         }
 
         // -------------------------------
-        // KENAR SİL
+        // EDGE SİL
         // -------------------------------
         private void btnRemoveEdge_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null || hedefDugum == null) return;
+            if (seciliDugum == null || hedefDugum == null)
+                return;
 
             var edge = graphManager.Edges.FirstOrDefault(ed =>
                 (ed.BaslangicDugumu == seciliDugum && ed.BitisDugumu == hedefDugum) ||
