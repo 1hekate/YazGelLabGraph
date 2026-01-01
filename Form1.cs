@@ -32,7 +32,7 @@ namespace YazGelLab
         }
 
         // -------------------------------
-        // MANUEL NODE EKLE
+        // NODE EKLE
         // -------------------------------
         private void btnAddNodeManuel_Click(object sender, EventArgs e)
         {
@@ -71,7 +71,7 @@ namespace YazGelLab
         }
 
         // -------------------------------
-        // DFS (YENİ)
+        // DFS
         // -------------------------------
         private void btnDFS_Click(object sender, EventArgs e)
         {
@@ -88,8 +88,35 @@ namespace YazGelLab
 
             for (int i = 0; i < sonuc.Count; i++)
                 gridSonuclar.Rows.Add(i + 1, sonuc[i]);
+        }
 
-            MessageBox.Show("DFS tamamlandı.");
+        // -------------------------------
+        // DİJKSTRA (YENİ)
+        // -------------------------------
+        private void btnShortestPath_Click(object sender, EventArgs e)
+        {
+            if (seciliDugum == null || hedefDugum == null)
+            {
+                MessageBox.Show("Başlangıç (sol tık) ve hedef (sağ tık) seçin.");
+                return;
+            }
+
+            var yol = Algorithms.Dijkstra(graphManager, seciliDugum, hedefDugum);
+
+            gridSonuclar.Rows.Clear();
+
+            if (yol == null)
+            {
+                MessageBox.Show("Yol bulunamadı.");
+                return;
+            }
+
+            for (int i = 0; i < yol.Count; i++)
+            {
+                gridSonuclar.Rows.Add(i + 1, yol[i].Ad);
+            }
+
+            MessageBox.Show("En kısa yol bulundu.");
         }
 
         // -------------------------------
