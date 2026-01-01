@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace YazGelLab
 {
@@ -19,6 +20,9 @@ namespace YazGelLab
             graphManager = new GraphManager();
         }
 
+        // -------------------------------
+        // MANUEL DÜĞÜM EKLE
+        // -------------------------------
         private void btnAddNodeManuel_Click(object sender, EventArgs e)
         {
             UserNode n = new UserNode(
@@ -35,6 +39,49 @@ namespace YazGelLab
             pnlGraph.Invalidate();
         }
 
+        // -------------------------------
+        // KENAR EKLE
+        // -------------------------------
+        private void btnAddEdge_Click(object sender, EventArgs e)
+        {
+            if (seciliDugum == null || hedefDugum == null)
+            {
+                MessageBox.Show("İki düğüm seçmelisiniz (Sol + Sağ tık).");
+                return;
+            }
+
+            bool varMi = graphManager.Edges.Any(ed =>
+                (ed.BaslangicDugumu == seciliDugum && ed.BitisDugumu == hedefDugum) ||
+                (ed.BaslangicDugumu == hedefDugum && ed.BitisDugumu == seciliDugum));
+
+            if (!varMi)
+            {
+                graphManager.AddEdge(seciliDugum.Ad, hedefDugum.Ad);
+                pnlGraph.Invalidate();
+            }
+        }
+
+        // -------------------------------
+        // KENAR SİL
+        // -------------------------------
+        private void btnRemoveEdge_Click(object sender, EventArgs e)
+        {
+            if (seciliDugum == null || hedefDugum == null) return;
+
+            var edge = graphManager.Edges.FirstOrDefault(ed =>
+                (ed.BaslangicDugumu == seciliDugum && ed.BitisDugumu == hedefDugum) ||
+                (ed.BaslangicDugumu == hedefDugum && ed.BitisDugumu == seciliDugum));
+
+            if (edge != null)
+            {
+                graphManager.Edges.Remove(edge);
+                pnlGraph.Invalidate();
+            }
+        }
+
+        // -------------------------------
+        // MOUSE İLE SEÇİM
+        // -------------------------------
         private void pnlGraph_MouseClick(object sender, MouseEventArgs e)
         {
             Point tiklananYer = e.Location;
@@ -62,12 +109,17 @@ namespace YazGelLab
             pnlGraph.Invalidate();
         }
 
+        // -------------------------------
+        // ÇİZİM
+        // -------------------------------
         private void pnlGraph_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
 
             foreach (var edge in graphManager.Edges)
-                g.DrawLine(Pens.Gray, edge.BaslangicDugumu.Konum, edge.BitisDugumu.Konum);
+                g.DrawLine(Pens.Gray,
+                    edge.BaslangicDugumu.Konum,
+                    edge.BitisDugumu.Konum);
 
             foreach (var node in graphManager.Nodes)
             {
@@ -75,10 +127,16 @@ namespace YazGelLab
                 if (node == seciliDugum) b = Brushes.Lime;
                 if (node == hedefDugum) b = Brushes.Red;
 
-                Rectangle r = new Rectangle(node.Konum.X - 20, node.Konum.Y - 20, 40, 40);
+                Rectangle r = new Rectangle(
+                    node.Konum.X - 20,
+                    node.Konum.Y - 20,
+                    40, 40);
+
                 g.FillEllipse(b, r);
                 g.DrawEllipse(Pens.Black, r);
-                g.DrawString(node.Ad, Font, Brushes.Black, node.Konum.X - 10, node.Konum.Y - 30);
+                g.DrawString(node.Ad, Font, Brushes.Black,
+                    node.Konum.X - 10,
+                    node.Konum.Y - 30);
             }
         }
     }
