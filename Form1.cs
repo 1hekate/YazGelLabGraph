@@ -21,6 +21,16 @@ namespace YazGelLab
             InitializeComponent();
             graphManager = new GraphManager();
         }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (gridSonuclar != null)
+            {
+                gridSonuclar.Columns.Clear();
+                gridSonuclar.Columns.Add("Sira", "Sıra");
+                gridSonuclar.Columns.Add("Bilgi", "Sonuç");
+                gridSonuclar.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            }
+        }
     }
 }
     
