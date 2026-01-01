@@ -14,6 +14,9 @@ namespace YazGelLab
         UserNode seciliDugum = null;
         UserNode hedefDugum = null;
 
+        // 🔴 YENİ: Aktif yol (Dijkstra / A*)
+        List<UserNode> aktifYol = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -55,11 +58,7 @@ namespace YazGelLab
         // -------------------------------
         private void btnDeleteNode_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null)
-            {
-                MessageBox.Show("Silinecek düğümü seçin.");
-                return;
-            }
+            if (seciliDugum == null) return;
 
             for (int i = graphManager.Edges.Count - 1; i >= 0; i--)
             {
@@ -73,22 +72,23 @@ namespace YazGelLab
             graphManager.Nodes.Remove(seciliDugum);
             seciliDugum = null;
             hedefDugum = null;
+            aktifYol = null;
 
             pnlGraph.Invalidate();
         }
 
         // -------------------------------
-        // 🔴 RANDOM GRAPH (YENİ)
+        // RANDOM GRAPH
         // -------------------------------
         private void btnRandomGraph_Click(object sender, EventArgs e)
         {
             graphManager = new GraphManager();
             seciliDugum = null;
             hedefDugum = null;
+            aktifYol = null;
 
             int nodeSayisi = rnd.Next(5, 10);
 
-            // Node oluştur
             for (int i = 0; i < nodeSayisi; i++)
             {
                 UserNode n = new UserNode(
@@ -104,12 +104,10 @@ namespace YazGelLab
                 graphManager.AddNode(n);
             }
 
-            // Edge oluştur
             foreach (var node in graphManager.Nodes)
             {
-                int baglantiSayisi = rnd.Next(1, 3);
-
-                for (int i = 0; i < baglantiSayisi; i++)
+                int baglanti = rnd.Next(1, 3);
+                for (int i = 0; i < baglanti; i++)
                 {
                     var hedef = graphManager.Nodes[rnd.Next(graphManager.Nodes.Count)];
                     if (hedef != node)
@@ -125,11 +123,9 @@ namespace YazGelLab
         // -------------------------------
         private void btnBFS_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null)
-            {
-                MessageBox.Show("Başlangıç düğümü seçin.");
-                return;
-            }
+            if (seciliDugum == null) return;
+
+            aktifYol = null;
 
             var sonuc = Algorithms.BFS(graphManager, seciliDugum);
 
@@ -138,6 +134,8 @@ namespace YazGelLab
 
             for (int i = 0; i < sonuc.Count; i++)
                 gridSonuclar.Rows.Add(i + 1, sonuc[i]);
+
+            pnlGraph.Invalidate();
         }
 
         // -------------------------------
@@ -145,11 +143,9 @@ namespace YazGelLab
         // -------------------------------
         private void btnDFS_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null)
-            {
-                MessageBox.Show("Başlangıç düğümü seçin.");
-                return;
-            }
+            if (seciliDugum == null) return;
+
+            aktifYol = null;
 
             var sonuc = Algorithms.DFS(graphManager, seciliDugum);
 
@@ -158,6 +154,8 @@ namespace YazGelLab
 
             for (int i = 0; i < sonuc.Count; i++)
                 gridSonuclar.Rows.Add(i + 1, sonuc[i]);
+
+            pnlGraph.Invalidate();
         }
 
         // -------------------------------
@@ -165,19 +163,35 @@ namespace YazGelLab
         // -------------------------------
         private void btnShortestPath_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null || hedefDugum == null)
-            {
-                MessageBox.Show("Başlangıç ve hedef seçin.");
-                return;
-            }
+            if (seciliDugum == null || hedefDugum == null) return;
 
-            var yol = Algorithms.Dijkstra(graphManager, seciliDugum, hedefDugum);
+            aktifYol = Algorithms.Dijkstra(graphManager, seciliDugum, hedefDugum);
 
             gridSonuclar.Rows.Clear();
-            if (yol == null) return;
+            if (aktifYol == null) return;
 
-            for (int i = 0; i < yol.Count; i++)
-                gridSonuclar.Rows.Add(i + 1, yol[i].Ad);
+            for (int i = 0; i < aktifYol.Count; i++)
+                gridSonuclar.Rows.Add(i + 1, aktifYol[i].Ad);
+
+            pnlGraph.Invalidate();
+        }
+
+        // -------------------------------
+        // 🔴 A* (YENİ)
+        // -------------------------------
+        private void btnAStar_Click(object sender, EventArgs e)
+        {
+            if (seciliDugum == null || hedefDugum == null) return;
+
+            aktifYol = Algorithms.AStar(graphManager, seciliDugum, hedefDugum);
+
+            gridSonuclar.Rows.Clear();
+            if (aktifYol == null) return;
+
+            for (int i = 0; i < aktifYol.Count; i++)
+                gridSonuclar.Rows.Add(i + 1, aktifYol[i].Ad);
+
+            pnlGraph.Invalidate();
         }
 
         // -------------------------------
@@ -185,37 +199,10 @@ namespace YazGelLab
         // -------------------------------
         private void btnAddEdge_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null || hedefDugum == null)
-                return;
+            if (seciliDugum == null || hedefDugum == null) return;
 
-            bool varMi = graphManager.Edges.Any(ed =>
-                (ed.BaslangicDugumu == seciliDugum && ed.BitisDugumu == hedefDugum) ||
-                (ed.BaslangicDugumu == hedefDugum && ed.BitisDugumu == seciliDugum));
-
-            if (!varMi)
-            {
-                graphManager.AddEdge(seciliDugum.Ad, hedefDugum.Ad);
-                pnlGraph.Invalidate();
-            }
-        }
-
-        // -------------------------------
-        // EDGE SİL
-        // -------------------------------
-        private void btnRemoveEdge_Click(object sender, EventArgs e)
-        {
-            if (seciliDugum == null || hedefDugum == null)
-                return;
-
-            var edge = graphManager.Edges.FirstOrDefault(ed =>
-                (ed.BaslangicDugumu == seciliDugum && ed.BitisDugumu == hedefDugum) ||
-                (ed.BaslangicDugumu == hedefDugum && ed.BitisDugumu == seciliDugum));
-
-            if (edge != null)
-            {
-                graphManager.Edges.Remove(edge);
-                pnlGraph.Invalidate();
-            }
+            graphManager.AddEdge(seciliDugum.Ad, hedefDugum.Ad);
+            pnlGraph.Invalidate();
         }
 
         // -------------------------------
@@ -223,20 +210,18 @@ namespace YazGelLab
         // -------------------------------
         private void pnlGraph_MouseClick(object sender, MouseEventArgs e)
         {
-            Point tiklananYer = e.Location;
+            Point p = e.Location;
 
             foreach (var node in graphManager.Nodes)
             {
                 double mesafe = Math.Sqrt(
-                    Math.Pow(node.Konum.X - tiklananYer.X, 2) +
-                    Math.Pow(node.Konum.Y - tiklananYer.Y, 2));
+                    Math.Pow(node.Konum.X - p.X, 2) +
+                    Math.Pow(node.Konum.Y - p.Y, 2));
 
                 if (mesafe < 20)
                 {
-                    if (e.Button == MouseButtons.Left)
-                        seciliDugum = node;
-                    else if (e.Button == MouseButtons.Right)
-                        hedefDugum = node;
+                    if (e.Button == MouseButtons.Left) seciliDugum = node;
+                    if (e.Button == MouseButtons.Right) hedefDugum = node;
 
                     pnlGraph.Invalidate();
                     return;
@@ -255,11 +240,23 @@ namespace YazGelLab
         {
             Graphics g = e.Graphics;
 
+            // Kenarlar
             foreach (var edge in graphManager.Edges)
                 g.DrawLine(Pens.Gray,
                     edge.BaslangicDugumu.Konum,
                     edge.BitisDugumu.Konum);
 
+            // 🔴 Aktif yol
+            if (aktifYol != null && aktifYol.Count > 1)
+            {
+                Pen yolKalemi = new Pen(Color.Red, 3);
+                for (int i = 0; i < aktifYol.Count - 1; i++)
+                    g.DrawLine(yolKalemi,
+                        aktifYol[i].Konum,
+                        aktifYol[i + 1].Konum);
+            }
+
+            // Node’lar
             foreach (var node in graphManager.Nodes)
             {
                 Brush b = Brushes.LightBlue;
@@ -268,14 +265,12 @@ namespace YazGelLab
 
                 Rectangle r = new Rectangle(
                     node.Konum.X - 20,
-                    node.Konum.Y - 20,
-                    40, 40);
+                    node.Konum.Y - 20, 40, 40);
 
                 g.FillEllipse(b, r);
                 g.DrawEllipse(Pens.Black, r);
                 g.DrawString(node.Ad, Font, Brushes.Black,
-                    node.Konum.X - 10,
-                    node.Konum.Y - 30);
+                    node.Konum.X - 10, node.Konum.Y - 30);
             }
         }
     }
