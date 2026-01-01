@@ -21,6 +21,17 @@ namespace YazGelLab
         }
 
         // -------------------------------
+        // FORM LOAD → TABLO HAZIRLA
+        // -------------------------------
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            gridSonuclar.Columns.Clear();
+            gridSonuclar.Columns.Add("Sira", "Sıra");
+            gridSonuclar.Columns.Add("Bilgi", "Ziyaret Edilen Düğüm");
+            gridSonuclar.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        // -------------------------------
         // MANUEL DÜĞÜM EKLE
         // -------------------------------
         private void btnAddNodeManuel_Click(object sender, EventArgs e)
@@ -40,13 +51,37 @@ namespace YazGelLab
         }
 
         // -------------------------------
+        // BFS ÇALIŞTIR
+        // -------------------------------
+        private void btnBFS_Click(object sender, EventArgs e)
+        {
+            if (seciliDugum == null)
+            {
+                MessageBox.Show("Başlangıç düğümünü sol tık ile seçin.");
+                return;
+            }
+
+            var sonuc = Algorithms.BFS(graphManager, seciliDugum);
+
+            gridSonuclar.Rows.Clear();
+            gridSonuclar.Rows.Add("0", seciliDugum.Ad);
+
+            for (int i = 0; i < sonuc.Count; i++)
+            {
+                gridSonuclar.Rows.Add((i + 1).ToString(), sonuc[i]);
+            }
+
+            MessageBox.Show("BFS tamamlandı.");
+        }
+
+        // -------------------------------
         // KENAR EKLE
         // -------------------------------
         private void btnAddEdge_Click(object sender, EventArgs e)
         {
             if (seciliDugum == null || hedefDugum == null)
             {
-                MessageBox.Show("İki düğüm seçmelisiniz (Sol + Sağ tık).");
+                MessageBox.Show("İki düğüm seçmelisiniz.");
                 return;
             }
 
@@ -80,7 +115,7 @@ namespace YazGelLab
         }
 
         // -------------------------------
-        // MOUSE İLE SEÇİM
+        // MOUSE SEÇİM
         // -------------------------------
         private void pnlGraph_MouseClick(object sender, MouseEventArgs e)
         {
