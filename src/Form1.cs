@@ -12,9 +12,9 @@ namespace YazGelLab
         GraphManager graphManager;
         Random rnd = new Random();
 
-        // Seçim Deðiþkenleri
-        UserNode seciliDugum = null; // Sol Týk (Yeþil)
-        UserNode hedefDugum = null;  // Sað Týk (Kýrmýzý)
+        // Seï¿½im Deï¿½iï¿½kenleri
+        UserNode seciliDugum = null; // Sol Tï¿½k (Yeï¿½il)
+        UserNode hedefDugum = null;  // Saï¿½ Tï¿½k (Kï¿½rmï¿½zï¿½)
 
         public Form1()
         {
@@ -24,18 +24,18 @@ namespace YazGelLab
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Tabloyu Hazýrla
+            // Tabloyu Hazï¿½rla
             if (gridSonuclar != null)
             {
                 gridSonuclar.Columns.Clear();
-                gridSonuclar.Columns.Add("Sira", "Sýra");
-                gridSonuclar.Columns.Add("Bilgi", "Sonuç");
+                gridSonuclar.Columns.Add("Sira", "Sï¿½ra");
+                gridSonuclar.Columns.Add("Bilgi", "Sonuï¿½");
                 gridSonuclar.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
         }
 
         // =============================================================
-        // 1. MOUSE TIKLAMA VE SEÇÝM (SOL/SAÐ TIK)
+        // 1. MOUSE TIKLAMA VE SEï¿½ï¿½M (SOL/SAï¿½ TIK)
         // =============================================================
         private void pnlGraph_MouseClick(object sender, MouseEventArgs e)
         {
@@ -44,14 +44,14 @@ namespace YazGelLab
 
             foreach (var node in graphManager.Nodes)
             {
-                // Týklanan koordinat bir düðümün içinde mi?
+                // Tï¿½klanan koordinat bir dï¿½ï¿½ï¿½mï¿½n iï¿½inde mi?
                 double mesafe = Math.Sqrt(Math.Pow(node.Konum.X - tiklananYer.X, 2) + Math.Pow(node.Konum.Y - tiklananYer.Y, 2));
 
                 if (mesafe < 20)
                 {
                     if (e.Button == MouseButtons.Left)
                     {
-                        seciliDugum = node; // Sol týk: Baþlangýç
+                        seciliDugum = node; // Sol tï¿½k: Baï¿½langï¿½ï¿½
 
                         // Bilgileri TextBox'lara aktar (Varsa)
                         if (txtAd != null) txtAd.Text = node.Ad;
@@ -60,7 +60,7 @@ namespace YazGelLab
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
-                        hedefDugum = node; // Sað týk: Hedef
+                        hedefDugum = node; // Saï¿½ tï¿½k: Hedef
                     }
 
                     birineTiklandi = true;
@@ -69,7 +69,7 @@ namespace YazGelLab
                 }
             }
 
-            // Boþluða týklandýysa seçimleri kaldýr
+            // Boï¿½luï¿½a tï¿½klandï¿½ysa seï¿½imleri kaldï¿½r
             if (!birineTiklandi)
             {
                 seciliDugum = null;
@@ -79,26 +79,26 @@ namespace YazGelLab
         }
 
         // =============================================================
-        // 2. ÇÝZÝM ÝÞLEMÝ (PAINT)
+        // 2. ï¿½ï¿½Zï¿½M ï¿½ï¿½LEMï¿½ (PAINT)
         // =============================================================
         private void pnlGraph_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            // Kenarlarý Çiz
+            // Kenarlarï¿½ ï¿½iz
             Pen edgePen = new Pen(Color.Gray, 2);
             foreach (var edge in graphManager.Edges)
             {
                 g.DrawLine(edgePen, edge.BaslangicDugumu.Konum, edge.BitisDugumu.Konum);
 
-                // Aðýrlýðý Yaz
+                // Aï¿½ï¿½rlï¿½ï¿½ï¿½ Yaz
                 float midX = (edge.BaslangicDugumu.Konum.X + edge.BitisDugumu.Konum.X) / 2;
                 float midY = (edge.BaslangicDugumu.Konum.Y + edge.BitisDugumu.Konum.Y) / 2;
                 g.DrawString(edge.Agirlik.ToString("F1"), this.Font, Brushes.Red, midX, midY);
             }
 
-            // Düðümleri Çiz
+            // Dï¿½ï¿½ï¿½mleri ï¿½iz
             int nodeSize = 40;
             foreach (var node in graphManager.Nodes)
             {
@@ -116,30 +116,30 @@ namespace YazGelLab
         }
 
         // =============================================================
-        // 3. YENÝ BUTONLAR (EKLE / SÝL / GÜNCELLE)
+        // 3. YENï¿½ BUTONLAR (EKLE / Sï¿½L / Gï¿½NCELLE)
         // =============================================================
 
-        // Bilgileri Güncelle
+        // Bilgileri Gï¿½ncelle
         private void btnUpdateNode_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null) { MessageBox.Show("Lütfen sol týkla bir düðüm seçin."); return; }
+            if (seciliDugum == null) { MessageBox.Show("Lï¿½tfen sol tï¿½kla bir dï¿½ï¿½ï¿½m seï¿½in."); return; }
             try
             {
                 seciliDugum.Ad = txtAd.Text;
                 seciliDugum.Aktiflik = double.Parse(txtAktiflik.Text);
                 seciliDugum.Etkilesim = double.Parse(txtEtkilesim.Text);
                 pnlGraph.Invalidate();
-                MessageBox.Show("Bilgiler güncellendi.");
+                MessageBox.Show("Bilgiler gï¿½ncellendi.");
             }
-            catch { MessageBox.Show("Sayýsal deðer hatasý."); }
+            catch { MessageBox.Show("Sayï¿½sal deï¿½er hatasï¿½."); }
         }
 
-        // Düðümü Sil
+        // Dï¿½ï¿½ï¿½mï¿½ Sil
         private void btnDeleteNode_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null) { MessageBox.Show("Silinecek düðümü seçin."); return; }
+            if (seciliDugum == null) { MessageBox.Show("Silinecek dï¿½ï¿½ï¿½mï¿½ seï¿½in."); return; }
 
-            // Baðlantýlarý temizle
+            // Baï¿½lantï¿½larï¿½ temizle
             for (int i = graphManager.Edges.Count - 1; i >= 0; i--)
             {
                 if (graphManager.Edges[i].BaslangicDugumu == seciliDugum || graphManager.Edges[i].BitisDugumu == seciliDugum)
@@ -150,15 +150,15 @@ namespace YazGelLab
             pnlGraph.Invalidate();
         }
 
-        // Manuel Düðüm Ekle
+        // Manuel Dï¿½ï¿½ï¿½m Ekle
         private void btnAddNodeManuel_Click(object sender, EventArgs e)
         {
-            // 1. Kutucuklar boþ mu kontrol et
+            // 1. Kutucuklar boï¿½ mu kontrol et
             if (string.IsNullOrWhiteSpace(txtAd.Text) ||
                 string.IsNullOrWhiteSpace(txtAktiflik.Text) ||
                 string.IsNullOrWhiteSpace(txtEtkilesim.Text))
             {
-                MessageBox.Show("Lütfen Ad, Aktiflik ve Etkileþim kutularýný doldurunuz!", "Eksik Bilgi");
+                MessageBox.Show("Lï¿½tfen Ad, Aktiflik ve Etkileï¿½im kutularï¿½nï¿½ doldurunuz!", "Eksik Bilgi");
                 return;
             }
 
@@ -166,32 +166,32 @@ namespace YazGelLab
             {
                 // 2. Textbox'lardaki verileri al
                 string ad = txtAd.Text;
-                double aktiflik = double.Parse(txtAktiflik.Text);   // Sayýya çevir
-                double etkilesim = double.Parse(txtEtkilesim.Text); // Sayýya çevir
-                double baglantiSayisi = 1; // Yeni eklenen kiþinin baþta 1 varsayalým (veya 0)
+                double aktiflik = double.Parse(txtAktiflik.Text);   // Sayï¿½ya ï¿½evir
+                double etkilesim = double.Parse(txtEtkilesim.Text); // Sayï¿½ya ï¿½evir
+                double baglantiSayisi = 1; // Yeni eklenen kiï¿½inin baï¿½ta 1 varsayalï¿½m (veya 0)
 
-                // 3. Yeni düðümü oluþtur
+                // 3. Yeni dï¿½ï¿½ï¿½mï¿½ oluï¿½tur
                 UserNode newNode = new UserNode(ad, aktiflik, etkilesim, baglantiSayisi);
 
-                // 4. Ekranda rastgele boþ bir yere koy
+                // 4. Ekranda rastgele boï¿½ bir yere koy
                 newNode.Konum = new Point(rnd.Next(50, pnlGraph.Width - 50), rnd.Next(50, pnlGraph.Height - 50));
 
-                // 5. Yöneticiye ekle ve çiz
+                // 5. Yï¿½neticiye ekle ve ï¿½iz
                 graphManager.AddNode(newNode);
                 pnlGraph.Invalidate();
 
-                MessageBox.Show($"'{ad}' baþarýyla eklendi.");
+                MessageBox.Show($"'{ad}' baï¿½arï¿½yla eklendi.");
             }
             catch
             {
-                MessageBox.Show("Lütfen Aktiflik ve Etkileþim kutularýna sadece SAYI giriniz (Örn: 12 veya 5.5).");
+                MessageBox.Show("Lï¿½tfen Aktiflik ve Etkileï¿½im kutularï¿½na sadece SAYI giriniz (ï¿½rn: 12 veya 5.5).");
             }
         }
 
-        // Baðlantý Ekle (+)
+        // Baï¿½lantï¿½ Ekle (+)
         private void btnAddEdge_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null || hedefDugum == null) { MessageBox.Show("Ýki düðüm seçmelisiniz."); return; }
+            if (seciliDugum == null || hedefDugum == null) { MessageBox.Show("ï¿½ki dï¿½ï¿½ï¿½m seï¿½melisiniz."); return; }
 
             bool varMi = graphManager.Edges.Any(ed => (ed.BaslangicDugumu == seciliDugum && ed.BitisDugumu == hedefDugum) || (ed.BaslangicDugumu == hedefDugum && ed.BitisDugumu == seciliDugum));
             if (!varMi)
@@ -201,7 +201,7 @@ namespace YazGelLab
             }
         }
 
-        // Baðlantý Sil (-)
+        // Baï¿½lantï¿½ Sil (-)
         private void btnRemoveEdge_Click(object sender, EventArgs e)
         {
             if (seciliDugum == null || hedefDugum == null) return;
@@ -214,7 +214,7 @@ namespace YazGelLab
         }
 
         // =============================================================
-        // 4. ESKÝ ÖZELLÝKLER VE ALGORÝTMALAR
+        // 4. ESKï¿½ ï¿½ZELLï¿½KLER VE ALGORï¿½TMALAR
         // =============================================================
 
         // Rastgele Graf
@@ -237,7 +237,7 @@ namespace YazGelLab
             pnlGraph.Invalidate();
         }
 
-        // CSV Yükle
+        // CSV Yï¿½kle
         private void btnLoadCSV_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = "CSV|*.csv";
@@ -247,7 +247,7 @@ namespace YazGelLab
                 string[] lines = File.ReadAllLines(openFileDialog1.FileName);
                 if (lines.Length <= 1) return;
 
-                // 1. Düðümleri Oku
+                // 1. Dï¿½ï¿½ï¿½mleri Oku
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] parts = lines[i].Split(',');
@@ -258,7 +258,7 @@ namespace YazGelLab
                         graphManager.AddNode(n);
                     }
                 }
-                // 2. Baðlantýlarý Oku
+                // 2. Baï¿½lantï¿½larï¿½ Oku
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] parts = lines[i].Split(',');
@@ -268,7 +268,7 @@ namespace YazGelLab
                     }
                 }
                 pnlGraph.Invalidate();
-                MessageBox.Show("CSV Yüklendi.");
+                MessageBox.Show("CSV Yï¿½klendi.");
             }
         }
 
@@ -280,23 +280,23 @@ namespace YazGelLab
             pnlGraph.Invalidate();
         }
 
-        // BFS Algoritmasý
+        // BFS Algoritmasï¿½
         private void btnBFS_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null) { MessageBox.Show("Bir düðüm seçin."); return; }
+            if (seciliDugum == null) { MessageBox.Show("Bir dï¿½ï¿½ï¿½m seï¿½in."); return; }
             var result = Algorithms.BFS(graphManager, seciliDugum);
 
             // Tabloya Yaz
             gridSonuclar.Rows.Clear();
-            gridSonuclar.Rows.Add("BAÞLANGIÇ", seciliDugum.Ad);
+            gridSonuclar.Rows.Add("BAï¿½LANGIï¿½", seciliDugum.Ad);
             for (int i = 0; i < result.Count; i++) gridSonuclar.Rows.Add(i + 1, result[i]);
-            MessageBox.Show("BFS Sonucu tabloya yazýldý.");
+            MessageBox.Show("BFS Sonucu tabloya yazï¿½ldï¿½.");
         }
 
-        // En Kýsa Yol (Dijkstra)
+        // En Kï¿½sa Yol (Dijkstra)
         private void btnShortestPath_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null || hedefDugum == null) { MessageBox.Show("Ýki düðüm seçin."); return; }
+            if (seciliDugum == null || hedefDugum == null) { MessageBox.Show("ï¿½ki dï¿½ï¿½ï¿½m seï¿½in."); return; }
             var path = Algorithms.Dijkstra(graphManager, seciliDugum, hedefDugum);
 
             gridSonuclar.Rows.Clear();
@@ -312,7 +312,7 @@ namespace YazGelLab
             }
             else
             {
-                MessageBox.Show("Yol bulunamadý.");
+                MessageBox.Show("Yol bulunamadï¿½.");
             }
         }
 
@@ -321,7 +321,7 @@ namespace YazGelLab
         {
             var result = Algorithms.EnEtkiliKullanicilar(graphManager);
             gridSonuclar.Rows.Clear();
-            foreach (var r in result) gridSonuclar.Rows.Add("Popüler", r);
+            foreach (var r in result) gridSonuclar.Rows.Add("Popï¿½ler", r);
         }
 
         // Renklendirme (Welsh-Powell)
@@ -330,84 +330,84 @@ namespace YazGelLab
             int renkSayisi = Algorithms.WelshPowellRenklendirme(graphManager);
             pnlGraph.Invalidate();
             gridSonuclar.Rows.Clear();
-            gridSonuclar.Rows.Add("SONUÇ", $"Toplam {renkSayisi} renk kullanýldý.");
-            MessageBox.Show($"Boyama tamamlandý. {renkSayisi} renk kullanýldý.");
+            gridSonuclar.Rows.Add("SONUï¿½", $"Toplam {renkSayisi} renk kullanï¿½ldï¿½.");
+            MessageBox.Show($"Boyama tamamlandï¿½. {renkSayisi} renk kullanï¿½ldï¿½.");
         }
 
         private void btnDFS_Click(object sender, EventArgs e)
         {
             if (seciliDugum == null)
             {
-                MessageBox.Show("Lütfen haritadan baþlangýç düðümünü seçin (Sol Týk).");
+                MessageBox.Show("Lï¿½tfen haritadan baï¿½langï¿½ï¿½ dï¿½ï¿½ï¿½mï¿½nï¿½ seï¿½in (Sol Tï¿½k).");
                 return;
             }
 
-            // Algoritmayý çaðýr
+            // Algoritmayï¿½ ï¿½aï¿½ï¿½r
             var result = Algorithms.DFS(graphManager, seciliDugum);
 
             // Tabloya Yaz
             gridSonuclar.Rows.Clear();
-            gridSonuclar.Rows.Add("BAÞLANGIÇ", seciliDugum.Ad);
+            gridSonuclar.Rows.Add("BAï¿½LANGIï¿½", seciliDugum.Ad);
 
             for (int i = 0; i < result.Count; i++)
             {
                 gridSonuclar.Rows.Add(i + 1, result[i]);
             }
 
-            MessageBox.Show("DFS (Derinlik Öncelikli) sonucu tabloya yazýldý.");
+            MessageBox.Show("DFS (Derinlik ï¿½ncelikli) sonucu tabloya yazï¿½ldï¿½.");
         }
 
         private void btnSaveCSV_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.Filter = "CSV Dosyasý|*.csv";
-            saveFileDialog1.Title = "Grafý Kaydet";
-            saveFileDialog1.FileName = "ProjeVerisi.csv"; // Varsayýlan isim
+            saveFileDialog1.Filter = "CSV Dosyasï¿½|*.csv";
+            saveFileDialog1.Title = "Grafï¿½ Kaydet";
+            saveFileDialog1.FileName = "ProjeVerisi.csv"; // Varsayï¿½lan isim
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    // CSV satýrlarýný oluþturacaðýmýz liste
+                    // CSV satï¿½rlarï¿½nï¿½ oluï¿½turacaï¿½ï¿½mï¿½z liste
                     var satirlar = new List<string>();
 
-                    // 1. Baþlýk Satýrý
+                    // 1. Baï¿½lï¿½k Satï¿½rï¿½
                     satirlar.Add("Ad,Aktiflik,Etkilesim,BaglantiSayisi,Komsular");
 
-                    // 2. Her düðüm için satýr oluþtur
+                    // 2. Her dï¿½ï¿½ï¿½m iï¿½in satï¿½r oluï¿½tur
                     foreach (var node in graphManager.Nodes)
                     {
-                        // Bu düðümün komþularýný bul
+                        // Bu dï¿½ï¿½ï¿½mï¿½n komï¿½ularï¿½nï¿½ bul
                         var komsular = new List<string>();
 
                         foreach (var edge in graphManager.Edges)
                         {
-                            // Eðer bu kenarýn bir ucu bizim düðümse, diðer ucu komþudur
+                            // Eï¿½er bu kenarï¿½n bir ucu bizim dï¿½ï¿½ï¿½mse, diï¿½er ucu komï¿½udur
                             if (edge.BaslangicDugumu == node) komsular.Add(edge.BitisDugumu.Ad);
                             else if (edge.BitisDugumu == node) komsular.Add(edge.BaslangicDugumu.Ad);
                         }
 
-                        // Komþularý "User2-User3" þeklinde tire ile birleþtir
+                        // Komï¿½ularï¿½ "User2-User3" ï¿½eklinde tire ile birleï¿½tir
                         string komsularString = string.Join("-", komsular);
 
-                        // CSV formatýnda satýrý hazýrla: Ad,Aktiflik,Etkileþim,BaðlantýSayýsý,Komþular
+                        // CSV formatï¿½nda satï¿½rï¿½ hazï¿½rla: Ad,Aktiflik,Etkileï¿½im,Baï¿½lantï¿½Sayï¿½sï¿½,Komï¿½ular
                         string satir = $"{node.Ad},{node.Aktiflik},{node.Etkilesim},{node.BaglantiSayisi},{komsularString}";
                         satirlar.Add(satir);
                     }
 
-                    // 3. Dosyayý diske yaz
+                    // 3. Dosyayï¿½ diske yaz
                     File.WriteAllLines(saveFileDialog1.FileName, satirlar);
-                    MessageBox.Show("Dosya baþarýyla kaydedildi!", "Kayýt Baþarýlý");
+                    MessageBox.Show("Dosya baï¿½arï¿½yla kaydedildi!", "Kayï¿½t Baï¿½arï¿½lï¿½");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Kaydederken hata oluþtu: " + ex.Message);
+                    MessageBox.Show("Kaydederken hata oluï¿½tu: " + ex.Message);
                 }
             }
         }
 
         private void btnAStar_Click(object sender, EventArgs e)
         {
-            if (seciliDugum == null || hedefDugum == null) { MessageBox.Show("Baþlangýç (Sol Týk) ve Hedef (Sað Týk) seçmelisiniz."); return; }
+            if (seciliDugum == null || hedefDugum == null) { MessageBox.Show("Baï¿½langï¿½ï¿½ (Sol Tï¿½k) ve Hedef (Saï¿½ Tï¿½k) seï¿½melisiniz."); return; }
 
             var path = Algorithms.AStar(graphManager, seciliDugum, hedefDugum);
 
@@ -424,28 +424,28 @@ namespace YazGelLab
             }
             else
             {
-                MessageBox.Show("Yol bulunamadý.");
+                MessageBox.Show("Yol bulunamadï¿½.");
             }
         }
 
         private void btnComponents_Click(object sender, EventArgs e)
         {
-            // Algoritmayý çalýþtýr
+            // Algoritmayï¿½ ï¿½alï¿½ï¿½tï¿½r
             var bilesenler = Algorithms.BagliBilesenleriBul(graphManager);
 
-            // Tabloyu Temizle ve Hazýrla
+            // Tabloyu Temizle ve Hazï¿½rla
             gridSonuclar.Rows.Clear();
 
-            // Sonuçlarý Yazdýr
+            // Sonuï¿½larï¿½ Yazdï¿½r
             for (int i = 0; i < bilesenler.Count; i++)
             {
-                // O topluluktaki kiþileri virgülle birleþtir (Örn: Ali, Veli, Ayþe)
+                // O topluluktaki kiï¿½ileri virgï¿½lle birleï¿½tir (ï¿½rn: Ali, Veli, Ayï¿½e)
                 string uyeler = string.Join(", ", bilesenler[i]);
 
                 gridSonuclar.Rows.Add($"TOPLULUK {i + 1}", uyeler);
             }
 
-            MessageBox.Show($"Analiz Tamamlandý.\nToplam {bilesenler.Count} adet ayrýk topluluk (ada) bulundu.", "Baðlý Bileþen Analizi");
+            MessageBox.Show($"Analiz Tamamlandï¿½.\nToplam {bilesenler.Count} adet ayrï¿½k topluluk (ada) bulundu.", "Baï¿½lï¿½ Bileï¿½en Analizi");
         }
     }
 }
